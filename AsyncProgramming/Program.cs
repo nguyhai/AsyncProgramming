@@ -14,16 +14,18 @@ namespace AsyncProgramming
             char charToConcatenate = '1';
 
             //Task t = new Task(ConcatenateChars);
-            Task t = Task.Factory.StartNew(() => ConcatenateChars(charToConcatenate, count)); 
+            Task<string> t = Task.Factory.StartNew(() => ConcatenateChars(charToConcatenate, count)); 
 
 
             Console.WriteLine("In Progress"); // You want this line to execute at the same time our method executes. 
             t.Wait(); // We are telling our task to wait until completion before proceeding. 
             Console.WriteLine("Completed");
+            Console.WriteLine("The length of the result is " + t.Result.Length);
+
         }
 
         // Lets create a method that concatenates a really long string
-        public static void ConcatenateChars(char charToConcatenate, int count)
+        public static string ConcatenateChars(char charToConcatenate, int count)
         {
             string concatenatedString = string.Empty;
 
@@ -31,6 +33,8 @@ namespace AsyncProgramming
             {
                 concatenatedString += charToConcatenate;
             }
+
+            return concatenatedString;
         }
     }
 }
