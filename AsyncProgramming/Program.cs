@@ -14,27 +14,36 @@ namespace AsyncProgramming
             char charToConcatenate = '1';
 
             //Task t = new Task(ConcatenateChars);
-            Task<string> t = Task.Factory.StartNew(() => ConcatenateChars(charToConcatenate, count)); 
+            Task<string> t = ConcatenateChars(charToConcatenate, count);
 
 
             Console.WriteLine("In Progress"); // You want this line to execute at the same time our method executes. 
-            t.Wait(); // We are telling our task to wait until completion before proceeding. 
-            Console.WriteLine("Completed");
+            //t.Wait(); // We are telling our task to wait until completion before proceeding. No longer need this if we use Async/Await
+            
             Console.WriteLine("The length of the result is " + t.Result.Length);
 
         }
 
         // Lets create a method that concatenates a really long string
-        public static string ConcatenateChars(char charToConcatenate, int count)
+        public async static Task<string> ConcatenateChars(char charToConcatenate, int count) // Now using async keyword
         {
-            string concatenatedString = string.Empty;
-
-            for (int i = 0; i < count; i++)
+            Task<string> t = Task<string>.Factory.StartNew(()=> 
             {
-                concatenatedString += charToConcatenate;
-            }
+                string concatenatedString = string.Empty;
 
-            return concatenatedString;
+                for (int i = 0; i < count; i++)
+                {
+                    concatenatedString += charToConcatenate;
+                }
+                return concatenatedString;
+            });
+
+            // using the await keyword for return. For this example, we are only waiting for the return
+            // Since we have the await keyword here, the above Task is executing asynchronously. It is just waiting fro "t" to complete. 
+            string result = await t;
+
+            Console.WriteLine("Completed");
+            return result; 
         }
     }
 }
